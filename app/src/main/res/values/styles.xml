@@ -54,6 +54,10 @@
         <item name="android:layout_marginVertical">@dimen/margin_2x</item>
         <item name="android:maxLines">1</item>
         <item name="android:textColor">@color/black</item>
+        <item name="android:textCursorDrawable">@drawable/custom_edit_text_cursor</item>
+        <item name="android:textSelectHandle">@drawable/custom_handle</item>
+        <item name="android:textSelectHandleLeft">@drawable/custom_handle</item>
+        <item name="android:textSelectHandleRight">@drawable/custom_handle</item>
     </style>
 
     <style name="textViewMessageStyle">
@@ -70,6 +74,10 @@
         <item name="android:layout_marginVertical">@dimen/margin_3x</item>
         <item name="android:textColor">?attr/mainTextColor</item>
         <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="statusBarStyle">
+        <item name="android:statusBarColor">?attr/mainTextColor</item>
     </style>
 
 </resources>
