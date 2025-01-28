@@ -37,7 +37,7 @@ class FavouriteVacanciesViewModel(
                         )
                     }
                 }catch (e: CustomException.DatabaseError) {
-                    _state.value = FavouriteVacanciesState.Error("Ошибка получения списка вакансий: $e")
+                    _state.value = FavouriteVacanciesState.Error
                 }
             }
         }
