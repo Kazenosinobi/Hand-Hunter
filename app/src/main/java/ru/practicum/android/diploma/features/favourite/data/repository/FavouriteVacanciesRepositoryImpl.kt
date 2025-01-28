@@ -26,14 +26,10 @@ class FavouriteVacanciesRepositoryImpl(
     }
 
     override fun getFavourites(): Flow<List<VacancyDetails>> {
-        try {
-            return favouritesDao.getFavourites()
-                .map { vacancies ->
-                    vacancies.map { it.toDomain() }.reversed()
-                }
-        } catch (e: SQLiteException) {
-            throw CustomException.DatabaseError("Ошибка получения списка вакансий: $e")
-        }
+        return favouritesDao.getFavourites()
+            .map { vacancies ->
+                vacancies.map { it.toDomain() }.reversed()
+            }
     }
 
     override suspend fun deleteFavouriteVacancy(vacancyId: String) {
