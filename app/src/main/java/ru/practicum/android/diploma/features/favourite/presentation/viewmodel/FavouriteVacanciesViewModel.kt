@@ -36,7 +36,7 @@ class FavouriteVacanciesViewModel(
                             vacancies.map { it.toUi(resourceProvider) }
                         )
                     }
-                }catch (e: CustomException.DatabaseError) {
+                } catch (e: CustomException.DatabaseError) {
                     _state.value = FavouriteVacanciesState.Error
                 }
             }

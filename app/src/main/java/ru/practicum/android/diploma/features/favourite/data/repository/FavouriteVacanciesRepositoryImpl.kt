@@ -2,7 +2,6 @@ package ru.practicum.android.diploma.features.favourite.data.repository
 
 import android.database.sqlite.SQLiteException
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import ru.practicum.android.diploma.features.common.data.database.FavouritesDao
 import ru.practicum.android.diploma.features.common.data.database.KeySkillEntity
@@ -32,7 +31,7 @@ class FavouriteVacanciesRepositoryImpl(
                 .map { vacancies ->
                     vacancies.map { it.toDomain() }.reversed()
                 }
-        }catch (e: SQLiteException) {
+        } catch (e: SQLiteException) {
             throw CustomException.DatabaseError("Ошибка получения списка вакансий: $e")
         }
     }
