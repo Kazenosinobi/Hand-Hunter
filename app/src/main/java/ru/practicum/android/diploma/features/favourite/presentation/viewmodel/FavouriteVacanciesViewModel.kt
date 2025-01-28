@@ -1,5 +1,6 @@
 package ru.practicum.android.diploma.features.favourite.presentation.viewmodel
 
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +38,7 @@ class FavouriteVacanciesViewModel(
                         )
                     }
                 }
-            } catch (e: CustomException.DatabaseError) {
+            } catch (e: SQLiteException) {
                 _state.value = FavouriteVacanciesState.Error
             }
         }
