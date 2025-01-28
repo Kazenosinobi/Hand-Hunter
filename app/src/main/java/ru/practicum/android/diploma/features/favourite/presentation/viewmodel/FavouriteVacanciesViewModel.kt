@@ -29,7 +29,7 @@ class FavouriteVacanciesViewModel(
     private fun getFavourites() {
         interactor.getFavourites()
             .catch { _state.value = FavouriteVacanciesState.DatabaseError }
-            .onEach{ vacancies ->
+            .onEach { vacancies ->
                 _state.value = if (vacancies.isEmpty()) {
                     FavouriteVacanciesState.Empty
                 } else {
