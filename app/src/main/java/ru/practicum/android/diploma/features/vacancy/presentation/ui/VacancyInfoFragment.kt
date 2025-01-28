@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -18,6 +20,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import ru.practicum.android.diploma.R
@@ -60,6 +63,19 @@ class VacancyInfoFragment : BaseFragment<FragmentVacancyInfoBinding>() {
     override fun observeData() {
         viewModel.state.collectWithLifecycle(this) { state ->
             applyState(state)
+        }
+        viewModel.dbErrorEvent.collectWithLifecycle(this) {
+            val snackBar = Snackbar.make(
+                requireContext(),
+                viewBinding.root,
+                resources.getString(R.string.vacancy_info_database_error),
+                Snackbar.LENGTH_SHORT
+            )
+            val textView = snackBar
+                .view
+                .findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+            textView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
+            snackBar.show()
         }
     }
 

@@ -2,8 +2,10 @@ package ru.practicum.android.diploma.features.vacancy.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.features.common.domain.CustomException
@@ -27,6 +29,9 @@ class VacancyInfoViewModel(
 
     private var _state: MutableStateFlow<State> = MutableStateFlow(State.Loading)
     val state: StateFlow<State> = _state.asStateFlow()
+
+    private var _dbErrorEvent = MutableSharedFlow<Unit>(0)
+    val dbErrorEvent = _dbErrorEvent.asSharedFlow()
 
     fun getVacancyInfo() {
         if (vacancyId == null) {
@@ -52,7 +57,7 @@ class VacancyInfoViewModel(
         }
     }
 
-    private fun handleError(error: Throwable) {
+    private suspend fun handleError(error: Throwable) {
         when (error) {
             is CustomException.RequestError, CustomException.EmptyError, CustomException.NetworkError -> {
                 _state.value = State.NoData
@@ -60,6 +65,7 @@ class VacancyInfoViewModel(
 
             is CustomException.ServerError -> _state.value = State.ServerError
             is CancellationException -> throw error
+            is CustomException.DatabaseSavingError -> _dbErrorEvent.emit(Unit)
             else -> Unit
         }
     }
@@ -80,8 +86,11 @@ class VacancyInfoViewModel(
     fun toggleFavouriteVacancy(): Boolean {
         if (_state.value is State.Data) {
             viewModelScope.launch {
-                details?.let {
-                    favouriteVacanciesInteractor.addToFavourites(it)
+                if (details != null) {
+                    favouriteVacanciesInteractor.addToFavourites(details!!)
+                        .onFailure { handleError(CustomException.DatabaseSavingError) }
+                } else {
+                    handleError(CustomException.DatabaseSavingError)
                 }
             }
             isFavourite = !isFavourite

@@ -5,4 +5,6 @@ sealed class CustomException : Exception() {
     data object NetworkError : CustomException()
     data object ServerError : CustomException()
     data class RequestError(val code: Int) : CustomException()
+    data object DatabaseGettingError: CustomException()
+    data object DatabaseSavingError: CustomException()
 }

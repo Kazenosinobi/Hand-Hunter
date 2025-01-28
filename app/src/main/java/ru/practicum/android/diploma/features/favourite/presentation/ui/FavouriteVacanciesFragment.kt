@@ -88,6 +88,7 @@ class FavouriteVacanciesFragment : BaseFragment<FragmentFavouriteVacanciesBindin
             is FavouriteVacanciesState.Content -> showContent(state.vacancies)
             is FavouriteVacanciesState.Empty -> showEmpty()
             is FavouriteVacanciesState.Loading -> showLoading()
+            is FavouriteVacanciesState.Error -> showError()
         }
     }
 
@@ -105,6 +106,14 @@ class FavouriteVacanciesFragment : BaseFragment<FragmentFavouriteVacanciesBindin
             groupOfErrorContainer.isVisible = true
             messageErrorTextView.setText(R.string.message_error_empty_data)
             errorImageView.setImageResource(R.drawable.empty_list)
+        }
+    }
+
+    private fun showError() {
+        with(viewBinding) {
+            groupOfErrorContainer.isVisible = true
+            messageErrorTextView.setText(R.string.message_error_could_not_get_data)
+            errorImageView.setImageResource(R.drawable.bad_search)
         }
     }
 

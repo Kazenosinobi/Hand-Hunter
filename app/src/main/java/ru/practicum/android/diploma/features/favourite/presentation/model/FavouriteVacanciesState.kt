@@ -8,11 +8,7 @@ sealed interface FavouriteVacanciesState {
 
     data object Empty : FavouriteVacanciesState
 
-    /* Добавить, когда будут обрабатывать ошибки
-    data class Error(
-        val errorMessage: String
-    ) : FavouriteVacanciesState
-     */
+    data object Error : FavouriteVacanciesState
 
     data class Content(
         val vacancies: List<VacancySearchUI>

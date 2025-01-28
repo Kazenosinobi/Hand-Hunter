@@ -18,12 +18,12 @@ import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentSearchBinding
+import ru.practicum.android.diploma.features.common.presentation.models.VacancySearchUI
+import ru.practicum.android.diploma.features.common.presentation.recycler.VacancyAdapter
 import ru.practicum.android.diploma.features.common.presentation.ui.BaseFragment
 import ru.practicum.android.diploma.features.search.domain.model.QuerySearch
 import ru.practicum.android.diploma.features.search.presentation.model.SearchState
 import ru.practicum.android.diploma.features.search.presentation.model.VacanciesSearchUI
-import ru.practicum.android.diploma.features.common.presentation.models.VacancySearchUI
-import ru.practicum.android.diploma.features.common.presentation.recycler.VacancyAdapter
 import ru.practicum.android.diploma.features.search.presentation.viewmodel.SearchViewModel
 import ru.practicum.android.diploma.features.vacancy.presentation.ui.VacancyInfoFragment
 import ru.practicum.android.diploma.utils.debounce
@@ -206,7 +206,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         with(viewBinding) {
             searchEditText.doOnTextChanged { text, _, _, _ ->
                 val isNotEmpty = text.isNullOrEmpty().not()
-                val querySearch = QuerySearch(text = text.toString())
+                val querySearch = QuerySearch(text = text.toString().trim())
                 if (!isNotEmpty) {
                     viewModel.onClearedSearch()
                 }

@@ -12,7 +12,7 @@ fun VacancyDetails.toDb(): VacancyDbEntity {
         title = title,
         salaryFrom = salary.from,
         salaryTo = salary.to,
-        currencySymbol = salary.currency.symbol,
+        currencyAbbr = salary.currency.name,
         isGross = salary.isGross,
         employerName = employer.name,
         employerLogoUrl = employer.logoUrl,
@@ -31,8 +31,8 @@ fun VacancyDbEntity.toDomain(skills: List<String> = emptyList()): VacancyDetails
         salary = Salary(
             from = salaryFrom ?: 0,
             to = salaryTo ?: 0,
-            currency = mapCurrencyToDomain(currencySymbol),
-            isGross = isGross ?: false
+            currency = mapCurrencyToDomain(currencyAbbr),
+            isGross = isGross
         ),
         employer = Employer(
             name = employerName,

@@ -17,6 +17,7 @@
     <string name="message_text">There are no such vacancies</string>
     <string name="salary_from">from </string>
     <string name="salary_to">to </string>
+    <string name="no_salary">The salary is not indicated</string>
 
     <string name="item_bottom_navigation_menu_home">Home</string>
     <string name="item_bottom_navigation_menu_favorites">Favorites</string>
@@ -50,7 +51,7 @@
     <string name="vacancy_info_salary_total_string">%s %s %s %s</string>
     <string name="vacancy_info_gross_info_true">gross</string>
     <string name="vacancy_info_gross_info_false">net</string>
-    <string name="no_salary">The salary is not indicated</string>
+    <string name="vacancy_info_database_error">Failed to add vacancy to favorites</string>
 
     <plurals name="vacancies_count">
         <item quantity="one">Found %d vacancy</item>

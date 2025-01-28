@@ -24,6 +24,7 @@
     <string name="message_text">Таких вакансий нет</string>
     <string name="salary_from">от </string>
     <string name="salary_to">до </string>
+    <string name="no_salary">Зарплата не указана</string>
 
     <string name="item_bottom_navigation_menu_home">Главная</string>
     <string name="item_bottom_navigation_menu_favorites">Избранное</string>
@@ -57,7 +58,7 @@
     <string name="vacancy_info_salary_total_string">%s %s %s %s</string>
     <string name="vacancy_info_gross_info_true">до вычета налогов</string>
     <string name="vacancy_info_gross_info_false">после вычета налогов</string>
-    <string name="no_salary">Зарплата не указана</string>
+    <string name="vacancy_info_database_error">Не удалось добавить вакансию в избранное</string>
 
     <plurals name="vacancies_count">
         <item quantity="one">Найдено %d вакансия</item>

@@ -9,8 +9,8 @@ class FavouriteVacanciesInteractorImpl(
     private val repository: FavouriteVacanciesRepository
 ) : FavouriteVacanciesInteractor {
 
-    override suspend fun addToFavourites(vacancy: VacancyDetails) {
-        repository.addToFavourites(vacancy)
+    override suspend fun addToFavourites(vacancy: VacancyDetails): Result<Unit> {
+        return repository.addToFavourites(vacancy)
     }
 
     override fun getFavourites(): Flow<List<VacancyDetails>> {
