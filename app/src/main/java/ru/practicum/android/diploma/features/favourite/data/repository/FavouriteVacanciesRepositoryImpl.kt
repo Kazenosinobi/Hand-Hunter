@@ -1,12 +1,12 @@
 package ru.practicum.android.diploma.features.favourite.data.repository
 
 import android.database.sqlite.SQLiteException
-import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import ru.practicum.android.diploma.features.common.data.database.FavouritesDao
 import ru.practicum.android.diploma.features.common.data.database.KeySkillEntity
+import ru.practicum.android.diploma.features.common.domain.CustomException
 import ru.practicum.android.diploma.features.common.domain.model.VacancyDetails
 import ru.practicum.android.diploma.features.favourite.data.dto.toDb
 import ru.practicum.android.diploma.features.favourite.data.dto.toDomain
@@ -32,10 +32,9 @@ class FavouriteVacanciesRepositoryImpl(
                 .map { vacancies ->
                     vacancies.map { it.toDomain() }.reversed()
                 }
-        } catch (e: SQLiteException) {
-            Log.e("Room error", "Error: ${e.message}")
+        }catch (e: SQLiteException) {
+            throw CustomException.DatabaseError("Ошибка получения списка вакансий: $e")
         }
-        return emptyFlow()
     }
 
     override suspend fun deleteFavouriteVacancy(vacancyId: String) {
