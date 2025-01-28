@@ -6,6 +6,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
+import ru.practicum.android.diploma.features.common.domain.CustomException
+import kotlin.jvm.Throws
 
 @Dao
 interface FavouritesDao {
@@ -24,6 +26,7 @@ interface FavouritesDao {
     }
 
     @Query("SELECT * FROM favourites_table")
+    @Throws(CustomException.DatabaseError::class)
     fun getFavourites(): Flow<List<VacancyDbEntity>>
 
     @Query("SELECT key_skill FROM key_skill_table WHERE vacancy_id = :vacancyId")
