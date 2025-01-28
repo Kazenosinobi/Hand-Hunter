@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.features.common.domain.CustomException
 import ru.practicum.android.diploma.features.common.presentation.ResourceProvider
 import ru.practicum.android.diploma.features.favourite.domain.api.FavouriteVacanciesInteractor
 import ru.practicum.android.diploma.features.favourite.presentation.model.FavouriteVacanciesState
@@ -27,15 +28,18 @@ class FavouriteVacanciesViewModel(
     private fun getFavourites() {
         viewModelScope.launch {
             interactor.getFavourites().collect { vacancies ->
-                _state.value = if (vacancies.isEmpty()) {
-                    FavouriteVacanciesState.Empty
-                } else {
-                    FavouriteVacanciesState.Content(
-                        vacancies.map { it.toUi(resourceProvider) }
-                    )
+                try {
+                    _state.value = if (vacancies.isEmpty()) {
+                        FavouriteVacanciesState.Empty
+                    } else {
+                        FavouriteVacanciesState.Content(
+                            vacancies.map { it.toUi(resourceProvider) }
+                        )
+                    }
+                }catch (e: CustomException.DatabaseError) {
+                    _state.value = FavouriteVacanciesState.Error("Ошибка получения списка вакансий: $e")
                 }
             }
         }
     }
-
 }
