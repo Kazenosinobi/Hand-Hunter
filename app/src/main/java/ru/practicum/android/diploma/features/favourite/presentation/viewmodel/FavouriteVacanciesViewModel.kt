@@ -27,8 +27,8 @@ class FavouriteVacanciesViewModel(
 
     private fun getFavourites() {
         viewModelScope.launch {
-            interactor.getFavourites().collect { vacancies ->
-                try {
+            try {
+                interactor.getFavourites().collect { vacancies ->
                     _state.value = if (vacancies.isEmpty()) {
                         FavouriteVacanciesState.Empty
                     } else {
@@ -36,9 +36,9 @@ class FavouriteVacanciesViewModel(
                             vacancies.map { it.toUi(resourceProvider) }
                         )
                     }
-                } catch (e: CustomException.DatabaseError) {
-                    _state.value = FavouriteVacanciesState.Error
                 }
+            }catch (e: CustomException.DatabaseError) {
+                _state.value = FavouriteVacanciesState.Error
             }
         }
     }
