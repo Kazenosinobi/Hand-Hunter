@@ -26,7 +26,6 @@ interface FavouritesDao {
     }
 
     @Query("SELECT * FROM favourites_table")
-    @Throws(CustomException.DatabaseError::class)
     fun getFavourites(): Flow<List<VacancyDbEntity>>
 
     @Query("SELECT key_skill FROM key_skill_table WHERE vacancy_id = :vacancyId")
