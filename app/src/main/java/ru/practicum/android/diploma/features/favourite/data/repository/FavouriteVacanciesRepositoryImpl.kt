@@ -1,6 +1,8 @@
 package ru.practicum.android.diploma.features.favourite.data.repository
 
+import android.database.sqlite.SQLiteException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import ru.practicum.android.diploma.features.common.data.database.AppDatabase
 import ru.practicum.android.diploma.features.common.data.database.KeySkillEntity
@@ -8,6 +10,7 @@ import ru.practicum.android.diploma.features.common.domain.model.VacancyDetails
 import ru.practicum.android.diploma.features.favourite.data.dto.toDb
 import ru.practicum.android.diploma.features.favourite.data.dto.toDomain
 import ru.practicum.android.diploma.features.favourite.domain.api.FavouriteVacanciesRepository
+import ru.practicum.android.diploma.features.favourite.presentation.model.FavouriteVacanciesState
 
 class FavouriteVacanciesRepositoryImpl(
     private val appDatabase: AppDatabase,
@@ -24,10 +27,15 @@ class FavouriteVacanciesRepositoryImpl(
     }
 
     override fun getFavourites(): Flow<List<VacancyDetails>> {
-        return appDatabase.favouritesDao().getFavourites()
-            .map { vacancies ->
-                vacancies.map { it.toDomain() }.reversed()
-            }
+        try {
+            return appDatabase.favouritesDao().getFavourites()
+                .map { vacancies ->
+                    vacancies.map { it.toDomain() }.reversed()
+                }
+        }catch (e: SQLiteException) {
+            FavouriteVacanciesState.Error(e.message.toString())
+        }
+        return emptyFlow()
     }
 
     private fun createKeySkillEntity(vacancyId: String, skill: String): KeySkillEntity {
