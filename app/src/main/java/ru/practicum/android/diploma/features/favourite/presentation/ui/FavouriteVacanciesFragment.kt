@@ -88,7 +88,7 @@ class FavouriteVacanciesFragment : BaseFragment<FragmentFavouriteVacanciesBindin
             is FavouriteVacanciesState.Content -> showContent(state.vacancies)
             is FavouriteVacanciesState.Empty -> showEmpty()
             is FavouriteVacanciesState.Loading -> showLoading()
-            is FavouriteVacanciesState.Error -> showError()
+            is FavouriteVacanciesState.DatabaseError -> showDatabaseError()
         }
     }
 
@@ -109,7 +109,7 @@ class FavouriteVacanciesFragment : BaseFragment<FragmentFavouriteVacanciesBindin
         }
     }
 
-    private fun showError() {
+    private fun showDatabaseError() {
         with(viewBinding) {
             groupOfErrorContainer.isVisible = true
             messageErrorTextView.setText(R.string.message_error_could_not_get_data)
