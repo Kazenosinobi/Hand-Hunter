@@ -28,7 +28,7 @@ class FavouriteVacanciesRepositoryImpl(
 
     override fun getFavourites(): Flow<List<VacancyDetails>> {
         try {
-            return favouritesDao().getFavourites()
+            return favouritesDao.getFavourites()
                 .map { vacancies ->
                     vacancies.map { it.toDomain() }.reversed()
                 }
