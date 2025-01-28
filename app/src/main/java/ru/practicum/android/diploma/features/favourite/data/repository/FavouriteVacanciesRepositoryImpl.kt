@@ -1,16 +1,17 @@
 package ru.practicum.android.diploma.features.favourite.data.repository
 
 import android.database.sqlite.SQLiteException
+import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import ru.practicum.android.diploma.features.common.data.database.FavouritesDao
 import ru.practicum.android.diploma.features.common.data.database.KeySkillEntity
+import ru.practicum.android.diploma.features.common.domain.CustomException
 import ru.practicum.android.diploma.features.common.domain.model.VacancyDetails
 import ru.practicum.android.diploma.features.favourite.data.dto.toDb
 import ru.practicum.android.diploma.features.favourite.data.dto.toDomain
 import ru.practicum.android.diploma.features.favourite.domain.api.FavouriteVacanciesRepository
-import ru.practicum.android.diploma.features.favourite.presentation.model.FavouriteVacanciesState
 
 class FavouriteVacanciesRepositoryImpl(
     private val favouritesDao: FavouritesDao,
@@ -33,7 +34,7 @@ class FavouriteVacanciesRepositoryImpl(
                     vacancies.map { it.toDomain() }.reversed()
                 }
         } catch (e: SQLiteException) {
-            FavouriteVacanciesState.Error(e.message.toString())
+            Log.e("Room error", "Error: ${e.message}")
         }
         return emptyFlow()
     }
