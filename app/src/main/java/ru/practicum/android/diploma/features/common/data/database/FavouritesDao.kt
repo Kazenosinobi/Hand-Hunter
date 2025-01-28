@@ -6,8 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
-import ru.practicum.android.diploma.features.common.domain.CustomException
-import kotlin.jvm.Throws
 
 @Dao
 interface FavouritesDao {
