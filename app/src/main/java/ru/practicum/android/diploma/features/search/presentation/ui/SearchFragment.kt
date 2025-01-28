@@ -206,7 +206,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         with(viewBinding) {
             searchEditText.doOnTextChanged { text, _, _, _ ->
                 val isNotEmpty = text.isNullOrEmpty().not()
-                val querySearch = QuerySearch(text = text.toString())
+                val querySearch = QuerySearch(text = text.toString().trim())
                 if (!isNotEmpty) {
                     viewModel.onClearedSearch()
                 }

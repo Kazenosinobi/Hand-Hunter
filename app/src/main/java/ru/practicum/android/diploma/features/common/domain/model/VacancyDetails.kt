@@ -10,7 +10,8 @@ data class VacancyDetails(
     val employmentType: String = "",
     val description: String = "",
     val keySkills: List<String> = emptyList(),
-    val vacancyUrl: String
+    val vacancyUrl: String,
+    val isFavourite: Boolean = false
 )
 
 data class Salary(

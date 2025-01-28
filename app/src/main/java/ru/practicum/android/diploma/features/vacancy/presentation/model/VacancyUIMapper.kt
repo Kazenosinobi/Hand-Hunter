@@ -6,6 +6,7 @@ import ru.practicum.android.diploma.features.common.domain.model.VacancyDetails
 import ru.practicum.android.diploma.features.common.presentation.ResourceProvider
 
 private const val EMPTY_STRING = ""
+private const val SALARY_STUB_VALUE = 0
 
 fun VacancyDetails.toUI(resourceProvider: ResourceProvider): VacancyInfoUI {
     return VacancyInfoUI(
@@ -17,7 +18,8 @@ fun VacancyDetails.toUI(resourceProvider: ResourceProvider): VacancyInfoUI {
         experience = experience,
         employmentForm = employmentType,
         description = description,
-        keySkills = mapKeySkillsListToString(keySkills)
+        keySkills = mapKeySkillsListToString(keySkills),
+        isFavourite = isFavourite
     )
 }
 
@@ -28,7 +30,7 @@ fun mapKeySkillsListToString(keySkills: List<String>): String {
 }
 
 fun Salary.toUI(resourceProvider: ResourceProvider): String {
-    return if (this == Salary.stub) {
+    return if (isStub(this)) {
         resourceProvider.getString(R.string.vacancy_info_no_salary)
     } else {
         val from = getFromValueForUI(resourceProvider, this.from)
@@ -43,6 +45,10 @@ fun Salary.toUI(resourceProvider: ResourceProvider): String {
             grossInfo
         )
     }
+}
+
+private fun isStub(salary: Salary): Boolean {
+    return salary.from == SALARY_STUB_VALUE && salary.to == SALARY_STUB_VALUE
 }
 
 private fun getFromValueForUI(resourceProvider: ResourceProvider, from: Int): String {

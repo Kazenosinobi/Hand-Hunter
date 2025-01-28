@@ -9,5 +9,6 @@ data class VacancyInfoUI(
     val experience: String,
     val employmentForm: String,
     val description: String,
-    val keySkills: String
+    val keySkills: String,
+    val isFavourite: Boolean
 )

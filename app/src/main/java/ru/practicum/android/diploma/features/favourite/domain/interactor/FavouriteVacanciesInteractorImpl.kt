@@ -17,4 +17,8 @@ class FavouriteVacanciesInteractorImpl(
         return repository.getFavourites()
     }
 
+    override suspend fun deleteFavouriteVacancy(vacancyId: String) {
+        repository.deleteFavouriteVacancy(vacancyId)
+    }
+
 }

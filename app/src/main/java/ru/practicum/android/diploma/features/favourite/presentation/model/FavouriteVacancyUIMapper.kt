@@ -17,6 +17,6 @@ fun VacancyDetails.toUi(resourceProvider: ResourceProvider): VacancySearchUI {
             resourceProvider
         ),
         employerLogoUrl = employer.logoUrl ?: "",
-        employerName = employer.name,
+        employerName = employer.name
     )
 }

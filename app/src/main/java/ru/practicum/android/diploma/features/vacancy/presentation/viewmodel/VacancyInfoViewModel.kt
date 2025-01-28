@@ -45,8 +45,10 @@ class VacancyInfoViewModel(
         viewModelScope.launch {
             vacancyDetailsInteractor.getVacancyDetails(vacancyId)
                 .onSuccess {
-                    details = it
-                    _state.value = State.Data(it.toUI(resourceProvider))
+                    isFavourite = vacancyDetailsInteractor.isFavouriteVacancy(vacancyId)
+                    details = it.copy(isFavourite = isFavourite)
+                    _state.value =
+                        State.Data(it.toUI(resourceProvider).copy(isFavourite = isFavourite))
                 }
                 .onFailure { handleError(it) }
         }
@@ -70,6 +72,7 @@ class VacancyInfoViewModel(
             details?.let {
                 _state.value = State.Data(it.toUI(resourceProvider))
             }
+            isFavourite = true
         }
     }
 
@@ -81,7 +84,11 @@ class VacancyInfoViewModel(
         if (_state.value is State.Data) {
             viewModelScope.launch {
                 details?.let {
-                    favouriteVacanciesInteractor.addToFavourites(it)
+                    if (isFavourite) {
+                        favouriteVacanciesInteractor.deleteFavouriteVacancy(it.id)
+                    } else {
+                        favouriteVacanciesInteractor.addToFavourites(it)
+                    }
                 }
             }
             isFavourite = !isFavourite

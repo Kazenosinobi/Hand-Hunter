@@ -6,4 +6,6 @@ interface VacancyDetailsRepository {
     suspend fun getVacancyDetails(vacancyId: String): Result<VacancyDetails>
 
     suspend fun getFavouriteVacancy(vacancyId: String): VacancyDetails
+
+    suspend fun isFavouriteVacancy(vacancyId: String): Boolean
 }

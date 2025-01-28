@@ -123,7 +123,7 @@ class FavouriteVacanciesFragment : BaseFragment<FragmentFavouriteVacanciesBindin
     }
 
     companion object {
-        const val CLICK_DEBOUNCE_DELAY = 1000L
+        const val CLICK_DEBOUNCE_DELAY = 100L
     }
 
 }

@@ -14,4 +14,9 @@ class VacancyDetailsInteractorImpl(
     override suspend fun getFavouriteVacancy(vacancyId: String): VacancyDetails {
         return vacancyDetailsRepository.getFavouriteVacancy(vacancyId)
     }
+
+    override suspend fun isFavouriteVacancy(vacancyId: String): Boolean {
+        return vacancyDetailsRepository.isFavouriteVacancy(vacancyId)
+    }
+
 }

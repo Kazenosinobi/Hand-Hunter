@@ -4,7 +4,7 @@ import android.database.sqlite.SQLiteException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
-import ru.practicum.android.diploma.features.common.data.database.AppDatabase
+import ru.practicum.android.diploma.features.common.data.database.FavouritesDao
 import ru.practicum.android.diploma.features.common.data.database.KeySkillEntity
 import ru.practicum.android.diploma.features.common.domain.model.VacancyDetails
 import ru.practicum.android.diploma.features.favourite.data.dto.toDb
@@ -13,14 +13,14 @@ import ru.practicum.android.diploma.features.favourite.domain.api.FavouriteVacan
 import ru.practicum.android.diploma.features.favourite.presentation.model.FavouriteVacanciesState
 
 class FavouriteVacanciesRepositoryImpl(
-    private val appDatabase: AppDatabase,
+    private val favouritesDao: FavouritesDao,
 ) : FavouriteVacanciesRepository {
 
     override suspend fun addToFavourites(vacancy: VacancyDetails) {
         val keySkills = vacancy.keySkills.map { skill ->
             createKeySkillEntity(vacancy.id, skill)
         }
-        appDatabase.favouritesDao().addToFavourites(
+        favouritesDao.addToFavourites(
             vacancy.toDb(),
             keySkills
         )
@@ -28,7 +28,7 @@ class FavouriteVacanciesRepositoryImpl(
 
     override fun getFavourites(): Flow<List<VacancyDetails>> {
         try {
-            return appDatabase.favouritesDao().getFavourites()
+            return favouritesDao().getFavourites()
                 .map { vacancies ->
                     vacancies.map { it.toDomain() }.reversed()
                 }
@@ -36,6 +36,10 @@ class FavouriteVacanciesRepositoryImpl(
             FavouriteVacanciesState.Error(e.message.toString())
         }
         return emptyFlow()
+    }
+
+    override suspend fun deleteFavouriteVacancy(vacancyId: String) {
+        favouritesDao.deleteFavouriteVacancy(vacancyId)
     }
 
     private fun createKeySkillEntity(vacancyId: String, skill: String): KeySkillEntity {

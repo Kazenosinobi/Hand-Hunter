@@ -22,14 +22,22 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="@dimen/margin_2x" />
 
-    <ImageView
-        android:id="@+id/logo_image_view"
+    <FrameLayout
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:contentDescription="@string/logo"
-        android:src="@drawable/placeholder_32px"
+        android:background="@drawable/logo_frame"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/horizontal_border" />
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_border">
+
+        <ImageView
+            android:id="@+id/logo_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/logo"
+            android:padding="1dp"
+            android:src="@drawable/placeholder_32px" />
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/profession_text_view"

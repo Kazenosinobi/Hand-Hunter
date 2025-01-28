@@ -22,7 +22,7 @@ fun DetailsVacancyEntity.toDomain(): VacancyDetails {
         employmentType = employment.toDomain(),
         description = description,
         keySkills = keySkills.map { it.toDomain() },
-        vacancyUrl = vacancyUrl
+        vacancyUrl = vacancyUrl,
     )
 }
 

@@ -31,7 +31,7 @@ class SearchViewModel(
 
         if (querySearch.text.isNullOrBlank() || querySearch.text == lastSearchQuery && !isStateError) return
 
-        lastSearchQuery = querySearch.text
+        lastSearchQuery = querySearch.text.trim()
         viewModelScope.launch {
             searchStateFlow.emit(SearchState.Loading)
             interactor.getVacancies(querySearch)

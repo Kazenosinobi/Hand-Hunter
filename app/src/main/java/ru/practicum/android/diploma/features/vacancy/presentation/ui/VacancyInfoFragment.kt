@@ -163,6 +163,13 @@ class VacancyInfoFragment : BaseFragment<FragmentVacancyInfoBinding>() {
             } else {
                 keySkillsTitleTextView.isGone = true
             }
+
+            val menu = toolbar.menu.findItem(R.id.favourite)
+            if (state.vacancyInfo.isFavourite) {
+                menu.icon = ContextCompat.getDrawable(requireContext(), R.drawable.favorites_on_24px)
+            } else {
+                menu.icon = ContextCompat.getDrawable(requireContext(), R.drawable.favorites_off_24px)
+            }
         }
     }
 

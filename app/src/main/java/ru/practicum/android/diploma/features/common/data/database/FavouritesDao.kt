@@ -32,8 +32,22 @@ interface FavouritesDao {
     @Query("SELECT * FROM favourites_table WHERE vacancy_id = :vacancyId")
     suspend fun getVacancy(vacancyId: String): VacancyDbEntity
 
-    @Transaction
     suspend fun getFavouriteVacancy(vacancyId: String): Pair<VacancyDbEntity, List<String>> {
         return Pair(getVacancy(vacancyId), getKeySkills(vacancyId))
     }
+
+    @Query("DELETE FROM favourites_table WHERE vacancy_id = :vacancyId")
+    suspend fun deleteVacancy(vacancyId: String)
+
+    @Query("DELETE FROM key_skill_table WHERE vacancy_id = :vacancyId")
+    suspend fun deleteSkills(vacancyId: String)
+
+    @Transaction
+    suspend fun deleteFavouriteVacancy(vacancyId: String) {
+        deleteVacancy(vacancyId)
+        deleteSkills(vacancyId)
+    }
+
+    @Query("SELECT EXISTS(SELECT 1 FROM favourites_table WHERE vacancy_id = :vacancyId)")
+    suspend fun isExisted(vacancyId: String): Boolean
 }
