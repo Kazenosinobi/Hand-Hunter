@@ -32,7 +32,7 @@ class FavouriteVacanciesRepositoryImpl(
                 .map { vacancies ->
                     vacancies.map { it.toDomain() }.reversed()
                 }
-        }catch (e: SQLiteException) {
+        } catch (e: SQLiteException) {
             FavouriteVacanciesState.Error(e.message.toString())
         }
         return emptyFlow()
