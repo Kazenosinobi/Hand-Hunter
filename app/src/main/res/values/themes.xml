@@ -17,5 +17,7 @@
         <item name="buttonApproveTextColor">@color/white</item>
         <item name="buttonAbortTextColor">@color/red</item>
         <item name="android:statusBarColor">?attr/mainBackgroundColor</item>
+
+        <item name="colorPrimary">@color/blue</item>
     </style>
 </resources>
