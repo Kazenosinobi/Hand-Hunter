@@ -62,7 +62,7 @@
 
     <style name="CustomOutlineBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">@color/light_gray</item>
-        <item name="android:textColorHint">@color/gray</item>
+        <item name="android:textColorHint">?attr/hintEditTextColor</item>
         <item name="hintTextColor">@color/blue</item>
         <item name="cursorColor">@color/blue</item>
         <item name="endIconTint">@color/black</item>
