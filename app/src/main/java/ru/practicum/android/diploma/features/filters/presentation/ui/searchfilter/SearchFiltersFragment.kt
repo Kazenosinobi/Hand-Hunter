@@ -13,8 +13,6 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputLayout
-import com.google.android.material.textfield.TextInputLayout.END_ICON_CLEAR_TEXT
-import com.google.android.material.textfield.TextInputLayout.END_ICON_NONE
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -133,7 +131,6 @@ class SearchFiltersFragment : BaseFragment<FragmentSearchFiltersBinding>() {
                     hideKeyBoard()
                 }
             } else {
-                salaryFrameContainer.endIconMode = END_ICON_NONE
                 imageClear.isVisible = false
             }
         }
