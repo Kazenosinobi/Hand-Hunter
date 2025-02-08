@@ -106,7 +106,7 @@
         android:layout_marginTop="@dimen/margin_4x"
         android:layout_marginBottom="@dimen/margin_4x"
         android:src="@drawable/close_24px"
-        android:visibility="visible"
+        android:visibility="gone"
         />
 
     <com.google.android.material.button.MaterialButton
