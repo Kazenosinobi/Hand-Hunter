@@ -125,9 +125,8 @@ class SearchFiltersFragment : BaseFragment<FragmentSearchFiltersBinding>() {
     private fun salaryEnterClearIcon(text: CharSequence?) {
         with(viewBinding) {
             if (text?.isBlank() == false) {
-                salaryFrameContainer.endIconMode = END_ICON_CLEAR_TEXT
-                salaryFrameContainer.setEndIconDrawable(R.drawable.close_24px)
-                salaryFrameContainer.setEndIconOnClickListener {
+                imageClear.isVisible = true
+                imageClear.setOnClickListener {
                     viewModel.deleteSalary()
                     salaryEditText.text?.clear()
                     salaryEditText.clearFocus()
@@ -135,7 +134,7 @@ class SearchFiltersFragment : BaseFragment<FragmentSearchFiltersBinding>() {
                 }
             } else {
                 salaryFrameContainer.endIconMode = END_ICON_NONE
-                salaryFrameContainer.endIconDrawable = null
+                imageClear.isVisible = false
             }
         }
     }
