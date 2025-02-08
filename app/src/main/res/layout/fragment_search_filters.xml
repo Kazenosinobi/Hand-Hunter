@@ -64,7 +64,7 @@
         android:id="@+id/salary_frame_container"
         style="@style/CustomOutlineBox"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="51dp"
         android:layout_marginStart="@dimen/margin_4x"
         android:layout_marginTop="@dimen/margin_6x"
         android:layout_marginEnd="@dimen/margin_4x"
@@ -80,7 +80,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/salary_edit_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:hint="@string/vacancy_search_filters_enter_salary"
             android:inputType="number"
             android:maxLength="8"
@@ -88,12 +88,26 @@
             android:paddingBottom="@dimen/margin_2x"
             android:textAppearance="@style/textStyleRegular16"
             android:textColor="@color/black"
-            android:textColorHint="@color/gray"
+            android:textColorHint="?attr/hintEditTextColor"
             android:textCursorDrawable="@drawable/custom_edit_text_cursor"
             android:textSelectHandle="@drawable/custom_handle"
             android:textSelectHandleLeft="@drawable/custom_handle"
             android:textSelectHandleRight="@drawable/custom_handle" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/image_clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/salary_frame_container"
+        app:layout_constraintBottom_toBottomOf="@id/salary_frame_container"
+        android:layout_marginEnd="@dimen/margin_8x"
+        android:layout_marginTop="@dimen/margin_4x"
+        android:layout_marginBottom="@dimen/margin_4x"
+        android:src="@drawable/close_24px"
+        android:visibility="visible"
+        />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/without_salary"
