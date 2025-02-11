@@ -13,6 +13,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import ru.practicum.android.diploma.R
@@ -20,8 +21,6 @@ import ru.practicum.android.diploma.databinding.FragmentLocationSelectionBinding
 import ru.practicum.android.diploma.features.common.presentation.ui.BaseFragment
 import ru.practicum.android.diploma.features.filters.presentation.model.api.Regionable
 import ru.practicum.android.diploma.features.filters.presentation.model.state.LocationSelectionState
-import ru.practicum.android.diploma.features.filters.presentation.model.ui.CountryUI
-import ru.practicum.android.diploma.features.filters.presentation.model.ui.RegionUI
 import ru.practicum.android.diploma.features.filters.presentation.ui.location.recycler.LocationAdapter
 import ru.practicum.android.diploma.utils.collectWithLifecycle
 import ru.practicum.android.diploma.utils.debounce
@@ -71,34 +70,42 @@ class LocationSelectionFragment : BaseFragment<FragmentLocationSelectionBinding>
         }
 
         when (state) {
-            is LocationSelectionState.ContentCountry -> showContentCountry(state.countries)
-            is LocationSelectionState.ContentRegion -> showContentRegion(state.regions)
-            is LocationSelectionState.Loading -> showLoading()
+            is LocationSelectionState.ContentCountry -> showContent(true, state.countries)
+            is LocationSelectionState.ContentRegion -> showContent(false, state.regions)
+            is LocationSelectionState.Loading -> isCountry?.let { showLoading(it) }
             is LocationSelectionState.NetworkError -> showNetworkError()
             is LocationSelectionState.NoRegionError -> showNoRegionError()
         }
     }
 
-    private fun showContentCountry(countries: List<CountryUI>) {
-        locationAdapter?.submitList(countries)
-        viewBinding.contentRecyclerView.isVisible = true
-        viewBinding.toolbar.title = getString(R.string.location_country_toolbar_title)
+    private fun setTittleText(isCountry: Boolean): String {
+        return getString(
+            if (isCountry) {
+                R.string.location_country_toolbar_title
+            } else {
+                R.string.location_region_toolbar_title
+            }
+        )
     }
 
-    private fun showContentRegion(regions: List<RegionUI>) {
-        locationAdapter?.submitList(regions)
-        viewBinding.contentRecyclerView.isVisible = true
-        viewBinding.searchEditText.isVisible = true
-        viewBinding.toolbar.title = getString(R.string.location_region_toolbar_title)
+    private fun showContent(isCountry: Boolean, list: List<Regionable>) {
+        with(viewBinding) {
+            locationAdapter?.submitList(list)
+            contentRecyclerView.isVisible = true
+            toolbar.title = setTittleText(isCountry)
+            searchEditText.isVisible = isCountry.not()
+        }
     }
 
-    private fun showLoading() {
+    private fun showLoading(isCountry: Boolean) {
         viewBinding.progressBar.isVisible = true
+        viewBinding.toolbar.title = setTittleText(isCountry)
     }
 
     private fun showNetworkError() {
         with(viewBinding) {
             errorContainer.isVisible = true
+            viewBinding.searchEditText.isVisible = isCountry?.not() == true
             messageErrorTextView.setText(R.string.location_server_error)
             errorImageView.setImageResource(R.drawable.something_went_wrong)
         }
@@ -113,6 +120,7 @@ class LocationSelectionFragment : BaseFragment<FragmentLocationSelectionBinding>
         }
     }
 
+    @Suppress("EmptyFunctionBlock")
     private fun initAdapter() {
         locationAdapter = LocationAdapter(
             onClick = { region ->
@@ -128,6 +136,20 @@ class LocationSelectionFragment : BaseFragment<FragmentLocationSelectionBinding>
         }
 
         locationAdapter?.submitList(emptyList())
+        locationAdapter?.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(
+                positionStart: Int,
+                itemCount: Int
+            ) {
+                viewBinding.contentRecyclerView.scrollToPosition(0)
+            }
+
+            override fun onItemRangeRemoved(
+                positionStart: Int,
+                itemCount: Int
+            ) {
+            }
+        })
     }
 
     private fun initClickDebounce() {
@@ -179,17 +201,14 @@ class LocationSelectionFragment : BaseFragment<FragmentLocationSelectionBinding>
 
     private fun switchSearchClearIcon(isEditTextNotEmpty: Boolean) {
         with(viewBinding) {
-            val icon = if (isEditTextNotEmpty) {
-                ContextCompat.getDrawable(
-                    requireContext(),
+            val icon = ContextCompat.getDrawable(
+                requireContext(),
+                if (isEditTextNotEmpty) {
                     R.drawable.close_24px
-                )
-            } else {
-                ContextCompat.getDrawable(
-                    requireContext(),
+                } else {
                     R.drawable.search_24px
-                )
-            }
+                }
+            )
             searchEditText.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null)
         }
     }
@@ -233,7 +252,7 @@ class LocationSelectionFragment : BaseFragment<FragmentLocationSelectionBinding>
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 100L
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val SEARCH_DEBOUNCE_DELAY = 500L
         private const val IS_COUNTRY = "is_country"
         private const val COUNTRY_ID = "country_id"
 

@@ -61,21 +61,25 @@
     </style>
 
     <style name="CustomOutlineBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxStrokeColor">@color/light_gray</item>
-        <item name="android:textColorHint">@color/gray</item>
-        <item name="hintTextColor">@color/blue</item>
-        <item name="cursorColor">@color/blue</item>
-        <item name="endIconTint">@color/black</item>
-        <item name="maxLines">1</item>
-        <item name="android:ellipsize">end</item>
-        <item name="boxCornerRadiusTopStart">@dimen/margin_3x</item>
-        <item name="boxCornerRadiusTopEnd">@dimen/margin_3x</item>
-        <item name="boxCornerRadiusBottomStart">@dimen/margin_3x</item>
-        <item name="boxCornerRadiusBottomEnd">@dimen/margin_3x</item>
+        <item name="android:background">@drawable/edit_text_background</item>
+        <item name="boxStrokeColor">?attr/mainBackgroundColor</item>
         <item name="boxStrokeWidth">0dp</item>
         <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="android:textAppearance">@style/textStyleRegular16</item>
+        <item name="hintTextAppearance">@style/textStyleRegular12</item>
+        <item name="android:textColorHint">?attr/hintEditTextColor</item>
+        <item name="android:textAlignment">viewStart</item>
         <item name="android:inputType">number</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="endIconTint">@color/black</item>
+        <item name="hintTextColor">@color/blue</item>
+        <item name="cursorColor">@color/blue</item>
+        <item name="android:ellipsize">end</item>
         <item name="expandedHintEnabled">false</item>
+        <item name="android:layout_marginHorizontal">@dimen/margin_4x</item>
+        <item name="android:layout_marginTop">@dimen/margin_6x</item>
+        <item name="android:paddingTop">@dimen/padding_2x</item>
         <item name="android:textCursorDrawable">@drawable/custom_edit_text_cursor</item>
         <item name="android:textSelectHandle">@drawable/custom_handle</item>
         <item name="android:textSelectHandleLeft">@drawable/custom_handle</item>

@@ -1,21 +1,30 @@
 package ru.practicum.android.diploma.features.filters.domain.interactor
 
-import ru.practicum.android.diploma.features.filters.domain.api.filter.FilterRepository
+import kotlinx.coroutines.flow.Flow
 import ru.practicum.android.diploma.features.filters.domain.api.workplace.SelectWorkplaceInteractor
+import ru.practicum.android.diploma.features.filters.domain.manager.LocationManager
 import ru.practicum.android.diploma.features.filters.domain.model.FullLocationData
 
 class SelectWorkplaceInteractorImpl(
-    private val filterRepository: FilterRepository
+    private val locationManager: LocationManager
 ) : SelectWorkplaceInteractor {
-    override fun getFullLocationData(): FullLocationData {
-        return filterRepository.getFullLocationData()
+    override fun clearData() {
+        locationManager.clearManager()
+    }
+
+    override fun subscribeLocationData(): Flow<FullLocationData?> {
+        return locationManager.subscribeLocationData()
     }
 
     override fun deleteCountryData() {
-        filterRepository.deleteCountryData()
+        locationManager.deleteCountry()
     }
 
     override fun deleteRegionData() {
-        filterRepository.deleteRegionData()
+        locationManager.deleteRegion()
+    }
+
+    override fun acceptLocationData() {
+        locationManager.acceptData()
     }
 }

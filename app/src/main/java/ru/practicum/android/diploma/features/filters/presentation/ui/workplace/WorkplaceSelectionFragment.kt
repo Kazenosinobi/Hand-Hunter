@@ -18,21 +18,26 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentWorkplaceSelectionBinding
 import ru.practicum.android.diploma.features.common.presentation.ui.BaseFragment
 import ru.practicum.android.diploma.features.filters.presentation.model.state.WorkplaceLocationState
+import ru.practicum.android.diploma.features.filters.presentation.model.ui.WorkplaceLocationUI
 import ru.practicum.android.diploma.features.filters.presentation.ui.location.LocationSelectionFragment
 
 class WorkplaceSelectionFragment : BaseFragment<FragmentWorkplaceSelectionBinding>() {
 
     private val viewModel by viewModel<WorkplaceSelectionViewModel>()
-    override fun createViewBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentWorkplaceSelectionBinding {
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentWorkplaceSelectionBinding {
         return FragmentWorkplaceSelectionBinding.inflate(layoutInflater)
     }
 
     override fun initUi() {
         viewBinding.toolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
+            findNavController().popBackStack()
         }
 
         viewBinding.chooseButton.setOnClickListener {
+            viewModel.acceptLocation()
             findNavController().navigateUp()
         }
 
@@ -60,7 +65,7 @@ class WorkplaceSelectionFragment : BaseFragment<FragmentWorkplaceSelectionBindin
             { startLocationSelectionFragment(it) },
             false
         )
-        viewModel.isWorkPlaceShowNeeded()
+        viewModel.subscribeLocationData()
     }
 
     override fun observeData() {
@@ -76,8 +81,8 @@ class WorkplaceSelectionFragment : BaseFragment<FragmentWorkplaceSelectionBindin
                 }
 
                 when (workplaceLocationState) {
-                    WorkplaceLocationState.Init -> showInit()
-                    is WorkplaceLocationState.Content -> showSuccess()
+                    is WorkplaceLocationState.Init -> showInit()
+                    is WorkplaceLocationState.Content -> showSuccess(workplaceLocationState.location)
                 }
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
@@ -92,26 +97,23 @@ class WorkplaceSelectionFragment : BaseFragment<FragmentWorkplaceSelectionBindin
         }
     }
 
-    private fun showSuccess() {
-        val location = viewModel.getLocation()
-        val country = location.country
-        val city = location.city
+    private fun showSuccess(location: WorkplaceLocationUI) {
         with(viewBinding) {
-            countryEditText.setText(country)
-            regionEditText.setText(city)
+            countryEditText.setText(location.country)
+            regionEditText.setText(location.city)
 
-            renderEditTextColor(countryTextInput, country)
-            renderEditTextColor(regionTextInput, city)
+            renderEditTextColor(countryTextInput, location.country)
+            renderEditTextColor(regionTextInput, location.city)
 
             countryEditText.isVisible = true
             regionEditText.isVisible = true
             countryTextInput.isEndIconVisible = true
             regionTextInput.isEndIconVisible = true
 
-            switchForwardClearIcon(viewBinding.countryTextInput, country.isEmpty())
-            switchForwardClearIcon(viewBinding.regionTextInput, city.isEmpty())
+            switchForwardClearIcon(viewBinding.countryTextInput, location.country.isNullOrEmpty())
+            switchForwardClearIcon(viewBinding.regionTextInput, location.city.isNullOrEmpty())
 
-            chooseButton.isVisible = country.isNotEmpty() || city.isNotEmpty()
+            chooseButton.isVisible = location.country.isNullOrEmpty().not() || location.city.isNullOrEmpty().not()
         }
     }
 
@@ -140,11 +142,11 @@ class WorkplaceSelectionFragment : BaseFragment<FragmentWorkplaceSelectionBindin
     }
 
     private fun switchForwardClearIcon(textInputLayout: TextInputLayout, isTextEmpty: Boolean) {
-        val image = if (isTextEmpty.not()) {
-            ContextCompat.getDrawable(requireContext(), R.drawable.close_24px)
-        } else {
-            ContextCompat.getDrawable(requireContext(), R.drawable.arrow_forward_24px)
-        }
+        val image = ContextCompat.getDrawable(
+            requireContext(),
+            if (isTextEmpty) R.drawable.arrow_forward_24px else R.drawable.close_24px
+        )
+
         textInputLayout.endIconDrawable = image
     }
 

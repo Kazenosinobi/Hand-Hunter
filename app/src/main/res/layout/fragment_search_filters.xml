@@ -65,13 +65,9 @@
         style="@style/CustomOutlineBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_4x"
-        android:layout_marginTop="@dimen/margin_6x"
-        android:layout_marginEnd="@dimen/margin_4x"
-        android:background="@drawable/bg_salary_frame"
         android:hint="@string/vacancy_search_filters_salary_expected"
-        android:paddingTop="@dimen/margin_2x"
-        app:hintTextAppearance="@style/textStyleRegular12"
+        app:endIconDrawable="@drawable/close_24px"
+        app:endIconMode="custom"
         app:layout_constraintBottom_toTopOf="@id/without_salary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -79,20 +75,12 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/salary_edit_text"
+            style="@style/editTextSearchStyleForTextInput"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:hint="@string/vacancy_search_filters_enter_salary"
-            android:inputType="number"
             android:maxLength="8"
-            android:paddingTop="@dimen/margin_2x"
-            android:paddingBottom="@dimen/margin_2x"
-            android:textAppearance="@style/textStyleRegular16"
-            android:textColor="@color/black"
-            android:textColorHint="@color/gray"
-            android:textCursorDrawable="@drawable/custom_edit_text_cursor"
-            android:textSelectHandle="@drawable/custom_handle"
-            android:textSelectHandleLeft="@drawable/custom_handle"
-            android:textSelectHandleRight="@drawable/custom_handle" />
+            android:inputType="number" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton

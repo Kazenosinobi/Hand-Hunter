@@ -29,7 +29,6 @@ import ru.practicum.android.diploma.features.search.presentation.model.SearchSta
 import ru.practicum.android.diploma.features.search.presentation.model.VacanciesSearchUI
 import ru.practicum.android.diploma.features.search.presentation.viewmodel.SearchViewModel
 import ru.practicum.android.diploma.features.vacancy.presentation.ui.VacancyInfoFragment
-import ru.practicum.android.diploma.utils.collectWithLifecycle
 import ru.practicum.android.diploma.utils.debounce
 
 @Suppress("LargeClass")
@@ -51,7 +50,8 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
     }
 
     override fun initUi() {
-        initSearchDebounce()
+        viewModel.getFilters()
+        isShouldStartSearch()
         initClickDebounce()
         initAdapters()
         initListeners()
@@ -101,11 +101,14 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
 
-        viewModel.isSearchWithFilters().collectWithLifecycle(this) {
-            if (it) {
-                viewBinding.filter.setImageResource(R.drawable.filter_on_24px)
+        viewModel.isSearchWithFilters()
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+            .distinctUntilChanged()
+            .onEach { hasFilters ->
+                switchFilterIcon(hasFilters)
+
             }
-        }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     private fun showToast(message: String) {
@@ -275,6 +278,23 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         }
     }
 
+    private fun switchFilterIcon(hasFilters: Boolean) {
+        with(viewBinding) {
+            val image = if (hasFilters) {
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.filter_on_24px
+                )
+            } else {
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.filter_off_24px
+                )
+            }
+            filter.setImageDrawable(image)
+        }
+    }
+
     private fun onTextChanged() {
         with(viewBinding) {
             searchTextInput.isHintEnabled = false
@@ -312,9 +332,21 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         }
     }
 
+    private fun isShouldStartSearch() {
+        val savedStateHandle = findNavController().currentBackStackEntry?.savedStateHandle
+        val isReturning = savedStateHandle?.get<Boolean>(IS_RETURNING) ?: false
+
+        if (!isReturning) {
+            initSearchDebounce()
+        } else {
+            savedStateHandle?.set(IS_RETURNING, false)
+        }
+    }
+
     private companion object {
         private const val EMPTY_TEXT = ""
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val CLICK_DEBOUNCE_DELAY = 100L
+        private const val IS_RETURNING = "isReturning"
     }
 }

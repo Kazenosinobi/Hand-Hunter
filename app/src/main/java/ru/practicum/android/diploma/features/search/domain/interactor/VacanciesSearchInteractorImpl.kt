@@ -15,18 +15,6 @@ class VacanciesSearchInteractorImpl(
     }
 
     override fun getFilters(): FilterMainData? {
-        val filters = filterRepository.getFilterMainData()
-        return if (isContented(filters)) filters else null
+        return filterRepository.getFilterMainData()
     }
-
-    private fun isContented(filters: FilterMainData): Boolean {
-        return with(filters) {
-            region.id.isNotEmpty() ||
-                country.id.isNotEmpty() ||
-                industry.id.isNotEmpty() ||
-                salary.isNotEmpty() ||
-                isNeedToHideVacancyWithoutSalary
-        }
-    }
-
 }

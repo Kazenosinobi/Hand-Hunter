@@ -99,7 +99,7 @@
         app:layout_constraintEnd_toStartOf="@id/right_border_guideline"
         app:layout_constraintStart_toEndOf="@id/left_border_guideline"
         app:layout_constraintTop_toBottomOf="@+id/errors_image_view"
-        tools:text="@string/could_not_get_the_list" />
+        android:text="@string/could_not_get_the_list" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/choose_button"

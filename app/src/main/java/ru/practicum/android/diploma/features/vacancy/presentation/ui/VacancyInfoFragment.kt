@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.activity.addCallback
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -15,6 +16,7 @@ import androidx.core.os.bundleOf
 import androidx.core.util.TypedValueCompat.dpToPx
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.FitCenter
@@ -48,8 +50,19 @@ class VacancyInfoFragment : BaseFragment<FragmentVacancyInfoBinding>() {
     override fun initUi() {
         with(viewBinding) {
             toolbar.setNavigationOnClickListener {
-                requireActivity().onBackPressedDispatcher.onBackPressed()
+                findNavController().previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.set(IS_RETURNING, true)
+                findNavController().popBackStack()
             }
+
+            requireActivity().onBackPressedDispatcher.addCallback(this@VacancyInfoFragment) {
+                findNavController().previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.set(IS_RETURNING, true)
+                findNavController().popBackStack()
+            }
+
             toolbar.setOnMenuItemClickListener {
                 handleMenuItemClick(it)
                 true
@@ -218,6 +231,7 @@ class VacancyInfoFragment : BaseFragment<FragmentVacancyInfoBinding>() {
         private const val SEND_INTENT_TYPE = "text/plain"
         private const val VACANCY_ID = "vacancyId"
         private const val WAS_OPENED_FROM_SEARCH = "wasOpenedFromSearch"
+        private const val IS_RETURNING = "isReturning"
 
         fun createArgs(wasOpenedFromSearch: Boolean, vacancyId: String): Bundle {
             return bundleOf(

@@ -1,45 +1,50 @@
 package ru.practicum.android.diploma.features.filters.domain.interactor
 
+import kotlinx.coroutines.flow.Flow
 import ru.practicum.android.diploma.features.filters.domain.api.filter.FilterInteractor
-import ru.practicum.android.diploma.features.filters.domain.api.filter.FilterRepository
+import ru.practicum.android.diploma.features.filters.domain.manager.FilterManager
 import ru.practicum.android.diploma.features.filters.domain.model.FilterMainData
 
 class FilterInteractorImpl(
-    private val repository: FilterRepository
+    private val filterManager: FilterManager,
 ) : FilterInteractor {
-    override fun saveSalary(salary: String) {
-        repository.setSalary(salary)
+    override fun clearManager() {
+        filterManager.clearManager()
     }
 
-    override fun saveWithoutSalary(check: Boolean) {
-        repository.setIsNeedToHideVacancyWithoutSalary(check)
+    override fun getDataFromPrefs(): FilterMainData {
+        return filterManager.getDataFromPrefs()
     }
 
-    override fun loadFilter(): FilterMainData {
-        return repository.getFilterMainData()
+    override fun subscribeData(): Flow<FilterMainData> {
+        return filterManager.subscribeData()
     }
 
-    override fun deleteFilter() {
-        repository.deleteFilterMainData()
+    override fun keepSalary(salary: String) {
+        filterManager.keepSalary(salary)
     }
 
-    override fun deleteCountryData() {
-        repository.deleteCountryData()
+    override fun keepWithoutSalaryFlag(check: Boolean) {
+        filterManager.keepOnlyWithSalaryFlag(check)
     }
 
-    override fun deleteRegionData() {
-        repository.deleteRegionData()
+    override fun deleteWorkplace() {
+        filterManager.deleteWorkplace()
     }
 
     override fun deleteIndustry() {
-        repository.deleteIndustry()
+        filterManager.deleteIndustry()
     }
 
     override fun deleteSalary() {
-        repository.deleteSalary()
+        filterManager.deleteSalary()
     }
 
-    override fun deleteShowWithoutSalaryFlag() {
-        repository.deleteShowWithoutSalaryFlag()
+    override fun saveData() {
+        filterManager.saveData()
+    }
+
+    override fun resetData() {
+        filterManager.resetData()
     }
 }

@@ -11,8 +11,31 @@ class SpecializationSelectionAdapter(
     private val onSelectionChanged: (Boolean) -> Unit
 ) : RecyclerView.Adapter<SpecializationSelectionViewHolder>() {
 
-    private val items: MutableList<IndustryUI> = mutableListOf()
-    private var selectedItemPosition = -1
+    private var items: List<IndustryUI> = emptyList()
+    private var selectedItem: IndustryUI? = null
+    private var selectedItemPosition: Int = RecyclerView.NO_POSITION
+
+    fun updateItems(newItems: List<IndustryUI>, savedSelectedItem: IndustryUI? = null) {
+        items = newItems
+        selectedItem = savedSelectedItem
+
+        selectedItemPosition = if (savedSelectedItem != null) {
+            items.indexOf(savedSelectedItem)
+        } else {
+            RecyclerView.NO_POSITION
+        }
+
+        notifyDataSetChanged()
+    }
+
+    fun updateSelectedItemPosition(position: Int) {
+        val previousSelectedPosition = selectedItemPosition
+        selectedItemPosition = position
+        selectedItem = items[position]
+
+        notifyItemChanged(previousSelectedPosition)
+        notifyItemChanged(selectedItemPosition)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpecializationSelectionViewHolder {
         val binding = ItemSpecializationBinding.inflate(
@@ -25,32 +48,11 @@ class SpecializationSelectionAdapter(
 
     override fun onBindViewHolder(holder: SpecializationSelectionViewHolder, position: Int) {
         val item = items[position]
-        holder.bind(item, position == selectedItemPosition)
+        holder.bind(item, item == selectedItem)
         holder.itemView.setOnClickListener {
             onItemClick(item, position)
         }
     }
 
     override fun getItemCount(): Int = items.size
-
-    fun updateItems(newItems: List<IndustryUI>) {
-        items.clear()
-        items.addAll(newItems)
-        selectedItemPosition = -1
-        notifyDataSetChanged()
-    }
-
-    fun updateSelectedItemPosition(position: Int) {
-        val previousSelectedItemPosition = selectedItemPosition
-        selectedItemPosition = if (position == selectedItemPosition) {
-            -1
-        } else {
-            position
-        }
-        notifyItemChanged(previousSelectedItemPosition)
-        notifyItemChanged(selectedItemPosition)
-
-        onSelectionChanged(selectedItemPosition != -1)
-    }
 }
-

@@ -105,6 +105,8 @@ class NetworkClientImpl(
             } else {
                 throw CustomException.NetworkError
             }
+        }.recoverCatching {
+            resolveError(it)
         }
     }
 

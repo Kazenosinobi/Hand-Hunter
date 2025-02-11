@@ -1,15 +1,21 @@
 package ru.practicum.android.diploma.features.filters.domain.api.filter
 
+import kotlinx.coroutines.flow.Flow
 import ru.practicum.android.diploma.features.filters.domain.model.FilterMainData
 
 interface FilterInteractor {
-    fun saveSalary(salary: String)
-    fun saveWithoutSalary(check: Boolean)
-    fun loadFilter(): FilterMainData
-    fun deleteFilter()
-    fun deleteCountryData()
-    fun deleteRegionData()
+    fun subscribeData(): Flow<FilterMainData>
+    fun clearManager()
+
+    fun getDataFromPrefs(): FilterMainData
+
+    fun keepSalary(salary: String)
+    fun keepWithoutSalaryFlag(check: Boolean)
+
+    fun deleteWorkplace()
     fun deleteIndustry()
     fun deleteSalary()
-    fun deleteShowWithoutSalaryFlag()
+
+    fun saveData()
+    fun resetData()
 }

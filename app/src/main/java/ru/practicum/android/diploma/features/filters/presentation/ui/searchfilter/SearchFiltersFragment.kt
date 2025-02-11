@@ -1,49 +1,69 @@
 package ru.practicum.android.diploma.features.filters.presentation.ui.searchfilter
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textfield.TextInputLayout.END_ICON_CLEAR_TEXT
 import com.google.android.material.textfield.TextInputLayout.END_ICON_NONE
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentSearchFiltersBinding
 import ru.practicum.android.diploma.features.common.presentation.ui.BaseFragment
-import ru.practicum.android.diploma.features.filters.presentation.model.ui.FilterUI
-import ru.practicum.android.diploma.utils.collectWithLifecycle
+import ru.practicum.android.diploma.features.filters.presentation.model.state.SearchFilterState
 
 class SearchFiltersFragment : BaseFragment<FragmentSearchFiltersBinding>() {
-
-    override fun createViewBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentSearchFiltersBinding {
-        return FragmentSearchFiltersBinding.inflate(inflater, container, false)
-    }
-
     private val viewModel: SearchFilterViewModel by viewModel<SearchFilterViewModel>()
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.getData()
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentSearchFiltersBinding {
+        return FragmentSearchFiltersBinding.inflate(inflater, container, false)
     }
 
     override fun initUi() {
         initializeViews()
+        viewModel.subscribeData()
     }
 
     override fun observeData() {
-        viewModel.stateFlowFilterUI.collectWithLifecycle(this) { filterUI ->
-            viewModel.currentFilterUI = filterUI
-            processFilterResult(filterUI)
-            setupClearButton(filterUI?.country, viewBinding.placeOfWorkContainer) { viewModel.deletePlaceOfWork() }
-            setupClearButton(filterUI?.industry, viewBinding.industryContainer) { viewModel.deleteIndustry() }
-        }
+        viewModel.stateFlowFilterUI
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+            .onEach { filterUI ->
+                processFilterResult(filterUI)
+                viewBinding.resetButton.isVisible = filterUI.data.isDefault.not()
+
+                renderEditTextColor(viewBinding.placeOfWorkContainer, filterUI.data.placeOfWork)
+                renderEditTextColor(viewBinding.industryContainer, filterUI.data.industry)
+
+                setupClearButton(
+                    filterUI.data.placeOfWork,
+                    viewBinding.placeOfWorkContainer
+                ) { viewModel.deletePlaceOfWork() }
+
+                setupClearButton(
+                    filterUI.data.industry,
+                    viewBinding.industryContainer
+                ) { viewModel.deleteIndustry() }
+            }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initializeViews() {
         with(viewBinding) {
             placeOfWorkEditText.setOnClickListener {
@@ -59,21 +79,39 @@ class SearchFiltersFragment : BaseFragment<FragmentSearchFiltersBinding>() {
             }
 
             resetButton.setOnClickListener {
-                viewModel.clearFilter()
+                viewModel.resetFilter()
             }
 
             acceptButton.setOnClickListener {
+                viewModel.acceptChanges()
                 findNavController().navigateUp()
             }
 
             salaryEditText.doOnTextChanged { s, _, _, _ ->
-                setButtonVisibility(viewModel.currentFilterUI)
                 viewModel.salaryEnterTextChanged(s)
                 salaryEnterClearIcon(s)
             }
 
             withoutSalary.setOnClickListener {
                 viewModel.setOnlyWithSalary(withoutSalary.isChecked)
+                setCheckedIcon(withoutSalary.isChecked)
+            }
+
+            @Suppress("LabeledExpression")
+            salaryEditText.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    salaryEditText.clearFocus()
+                    hideKeyBoard()
+                    return@setOnEditorActionListener true
+                } else {
+                    return@setOnEditorActionListener false
+                }
+            }
+
+            viewBinding.root.setOnTouchListener { _, _ ->
+                hideKeyBoard()
+                salaryEditText.clearFocus()
+                false
             }
         }
     }
@@ -114,21 +152,20 @@ class SearchFiltersFragment : BaseFragment<FragmentSearchFiltersBinding>() {
             }
         } else {
             til.setEndIconDrawable(R.drawable.arrow_forward_24px)
-            til.isEndIconVisible = false
             til.isEndIconVisible = true
         }
     }
 
-    private fun processFilterResult(filter: FilterUI?) {
+    private fun processFilterResult(state: SearchFilterState.Content) {
         with(viewBinding) {
-            setButtonVisibility(filter)
-            if (filter?.isDefault == false) {
-                processArea(filter.country, filter.region)
-                industryEditText.setText(filter.industry ?: "")
-                withoutSalary.isChecked = filter.onlyWithSalary
-                val newSalary = filter.salary
+            setButtonVisibility(state.isButtonsVisible)
+            if (state.data.isDefault.not()) {
+                viewBinding.placeOfWorkEditText.setText(state.data.placeOfWork)
+                industryEditText.setText(state.data.industry)
+                withoutSalary.isChecked = state.data.onlyWithSalary
+                val newSalary = state.data.salary
                 if (newSalary != viewModel.oldSalary) {
-                    salaryEditText.setText(newSalary.toString())
+                    salaryEditText.setText(newSalary)
                 }
             } else {
                 placeOfWorkEditText.text = null
@@ -137,29 +174,37 @@ class SearchFiltersFragment : BaseFragment<FragmentSearchFiltersBinding>() {
                 salaryEditText.text = null
             }
         }
-        setCheckedIcon(filter?.onlyWithSalary ?: false)
+        setCheckedIcon(state.data.onlyWithSalary)
     }
 
-    private fun processArea(country: String?, region: String?) {
-        var result = ""
-        if (country != null) result += country
-        if (region != null) result += ", $region"
-        viewBinding.placeOfWorkEditText.setText(result)
-    }
-
-    private fun setButtonVisibility(filterUI: FilterUI?): Unit = with(viewBinding) {
-        resetButton.isVisible = filterUI?.isDefault != true
-        acceptButton.isVisible = filterUI != viewModel.baseFilterUI
-    }
-
-    fun setCheckedIcon(isChecked: Boolean) {
+    private fun setButtonVisibility(isVisible: Boolean) {
         with(viewBinding) {
-            if (isChecked) {
-                withoutSalary.icon = ContextCompat.getDrawable(requireContext(), R.drawable.check_box_on_24px)
-            } else {
-                withoutSalary.icon = ContextCompat.getDrawable(requireContext(), R.drawable.check_box_off_24px)
-                viewModel.deleteShowWithoutSalary()
-            }
+            acceptButton.isVisible = isVisible
+        }
+    }
+
+    private fun setCheckedIcon(isChecked: Boolean) {
+        with(viewBinding) {
+            withoutSalary.icon =
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    if (isChecked) {
+                        R.drawable.check_box_on_24px
+                    } else {
+                        R.drawable.check_box_off_24px
+                    }
+                )
+        }
+    }
+
+    private fun renderEditTextColor(view: TextInputLayout, text: CharSequence?) {
+        val typedValue = TypedValue()
+        if (!text.isNullOrEmpty()) {
+            requireContext().theme.resolveAttribute(R.attr.mainEditTextColor, typedValue, true)
+            view.defaultHintTextColor = ColorStateList.valueOf(typedValue.data)
+        } else {
+            requireContext().theme.resolveAttribute(R.attr.hintEditTextColor, typedValue, true)
+            view.defaultHintTextColor = ColorStateList.valueOf(typedValue.data)
         }
     }
 }
