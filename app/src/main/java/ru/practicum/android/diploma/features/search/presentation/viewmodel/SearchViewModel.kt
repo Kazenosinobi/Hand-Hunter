@@ -83,6 +83,15 @@ class SearchViewModel(
         }
     }
 
+    fun performSearchWithFilters() {
+        performSearch(
+            text = lastSearchQuery,
+            page = DEFAULT_PAGE,
+            perPage = DEFAULT_PER_PAGE,
+            isPagination = false
+        )
+    }
+
     fun getFilters() {
         filters = interactor.getFilters()
         isSearchWithFilters.value =

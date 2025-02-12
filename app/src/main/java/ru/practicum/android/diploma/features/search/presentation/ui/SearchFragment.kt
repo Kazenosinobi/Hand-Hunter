@@ -106,7 +106,9 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
             .distinctUntilChanged()
             .onEach { hasFilters ->
                 switchFilterIcon(hasFilters)
-
+                if (hasFilters) {
+                    viewModel.performSearchWithFilters()
+                }
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
     }
