@@ -53,6 +53,14 @@ class FavouriteVacanciesRepositoryImpl(
         }
     }
 
+    override suspend fun deleteFavourites(): Result<Unit> {
+        return kotlin.runCatching {
+            favouritesDao.deleteAllData()
+        }.recoverCatching {
+            throw CustomException.UpdateDatabaseError
+        }
+    }
+
     private fun createKeySkillEntity(vacancyId: String, skill: String): KeySkillEntity {
         return KeySkillEntity(
             vacancyId = vacancyId,

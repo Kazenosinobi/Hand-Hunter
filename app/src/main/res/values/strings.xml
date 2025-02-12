@@ -39,10 +39,13 @@
     <string name="dev_name4">Никита Степаненко</string>
     <string name="dev_name5">Кирилл Матвеев</string>
 
-    <string name="favourite_title">Избранное</string>
-    <string name="content_description_error_message">Произошла ошибка</string>
-    <string name="message_error_empty_data">Список пуст</string>
-    <string name="message_error_could_not_get_data">Не удалось получить список вакансий</string>
+    <string name="favourites_title">Избранное</string>
+    <string name="favourites_content_description_error_message">Произошла ошибка</string>
+    <string name="favourites_message_error_empty_data">Список пуст</string>
+    <string name="favourites_message_error_could_not_get_data">Не удалось получить список вакансий</string>
+    <string name="favourites_message_success_deleting">Список успешно очищен</string>
+    <string name="favourite_delete_button">Очистить избранное</string>
+    <string name="favourite_message_error_deleting">Не удалось очистить избранное</string>
 
     <string name="vacancy_info_title">Вакансия</string>
     <string name="vacancy_info_title_experience">Требуемый опыт</string>

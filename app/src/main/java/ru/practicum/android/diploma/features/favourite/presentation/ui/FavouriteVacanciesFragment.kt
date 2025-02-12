@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFavouriteVacanciesBinding
@@ -34,6 +35,7 @@ class FavouriteVacanciesFragment : BaseFragment<FragmentFavouriteVacanciesBindin
     override fun initUi() {
         initAdapter()
         initClickDebounce()
+        initListeners()
     }
 
     override fun observeData() {
@@ -69,6 +71,12 @@ class FavouriteVacanciesFragment : BaseFragment<FragmentFavouriteVacanciesBindin
         }
     }
 
+    private fun initListeners() {
+        viewBinding.deleteButton.setOnClickListener {
+            viewModel.deleteFavourites()
+        }
+    }
+
     private fun startVacancyInfoFragment(vacancyId: String) {
         findNavController()
             .navigate(
@@ -82,6 +90,7 @@ class FavouriteVacanciesFragment : BaseFragment<FragmentFavouriteVacanciesBindin
             progressBar.isGone = true
             groupOfErrorContainer.isGone = true
             favouriteRecyclerView.isGone = true
+            deleteButton.isGone = true
         }
 
         when (state) {
@@ -89,12 +98,25 @@ class FavouriteVacanciesFragment : BaseFragment<FragmentFavouriteVacanciesBindin
             is FavouriteVacanciesState.Empty -> showEmpty()
             is FavouriteVacanciesState.Loading -> showLoading()
             is FavouriteVacanciesState.DatabaseError -> showError()
+            is FavouriteVacanciesState.DeleteError -> {
+                showSnackBar(resources.getString(R.string.favourite_message_error_deleting))
+                vacancyAdapter?.currentList?.let {
+                    showContent(it)
+                }
+            }
+
+            is FavouriteVacanciesState.DeletedFavourites -> {
+                showSnackBar(resources.getString(R.string.favourites_message_success_deleting))
+            }
         }
     }
 
     private fun showContent(vacancies: List<VacancySearchUI>) {
         vacancyAdapter?.submitList(vacancies)
-        viewBinding.favouriteRecyclerView.isVisible = true
+        with(viewBinding) {
+            favouriteRecyclerView.isVisible = true
+            deleteButton.isVisible = true
+        }
     }
 
     private fun showLoading() {
@@ -104,7 +126,7 @@ class FavouriteVacanciesFragment : BaseFragment<FragmentFavouriteVacanciesBindin
     private fun showEmpty() {
         with(viewBinding) {
             groupOfErrorContainer.isVisible = true
-            messageErrorTextView.setText(R.string.message_error_empty_data)
+            messageErrorTextView.setText(R.string.favourites_message_error_empty_data)
             errorImageView.setImageResource(R.drawable.empty_list)
         }
     }
@@ -112,9 +134,19 @@ class FavouriteVacanciesFragment : BaseFragment<FragmentFavouriteVacanciesBindin
     private fun showError() {
         with(viewBinding) {
             groupOfErrorContainer.isVisible = true
-            messageErrorTextView.setText(R.string.message_error_could_not_get_data)
+            messageErrorTextView.setText(R.string.favourites_message_error_could_not_get_data)
             errorImageView.setImageResource(R.drawable.bad_search)
         }
+    }
+
+    private fun showSnackBar(message: String) {
+        val snackBar = Snackbar.make(
+            requireContext(),
+            viewBinding.root,
+            message,
+            Snackbar.LENGTH_SHORT
+        )
+        snackBar.show()
     }
 
     override fun onDestroyView() {

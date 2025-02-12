@@ -21,4 +21,8 @@ class FavouriteVacanciesInteractorImpl(
         return repository.deleteFavouriteVacancy(vacancyId)
     }
 
+    override suspend fun deleteFavourites(): Result<Unit> {
+        return repository.deleteFavourites()
+    }
+
 }

@@ -66,7 +66,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_4x"
-            android:contentDescription="@string/content_description_error_message"
+            android:contentDescription="@string/favourites_content_description_error_message"
             android:src="@drawable/bad_search" />
 
         <TextView

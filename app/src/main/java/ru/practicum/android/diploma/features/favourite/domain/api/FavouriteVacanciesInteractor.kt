@@ -11,4 +11,6 @@ interface FavouriteVacanciesInteractor {
 
     suspend fun deleteFavouriteVacancy(vacancyId: String): Result<Unit>
 
+    suspend fun deleteFavourites(): Result<Unit>
+
 }

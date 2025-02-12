@@ -12,7 +12,7 @@
         android:id="@+id/favourite_title_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="@string/favourite_title"
+        app:title="@string/favourites_title"
         app:titleTextAppearance="@style/toolbarTextStyle" />
 
     <FrameLayout
@@ -37,6 +37,7 @@
         android:layout_marginHorizontal="@dimen/margin_4x"
         android:layout_weight="1"
         android:visibility="visible"
+        tools:itemCount="2"
         tools:visibility="visible"
         tools:listitem="@layout/item_search"/>
 
@@ -54,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_4x"
-            android:contentDescription="@string/content_description_error_message"
+            android:contentDescription="@string/favourites_content_description_error_message"
             android:src="@drawable/empty_list" />
 
         <TextView
@@ -69,6 +70,16 @@
             tools:text="Список пуст" />
 
     </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/delete_button"
+        style="@style/ButtonChooseStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:background="@drawable/choose_button"
+        android:text="@string/favourite_delete_button"
+        android:layout_marginTop="@dimen/margin_4x" />
 
 </LinearLayout>
 

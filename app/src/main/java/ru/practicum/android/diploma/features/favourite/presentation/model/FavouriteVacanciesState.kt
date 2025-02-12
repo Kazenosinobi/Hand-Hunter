@@ -13,4 +13,8 @@ sealed interface FavouriteVacanciesState {
     data class Content(
         val vacancies: List<VacancySearchUI>
     ) : FavouriteVacanciesState
+
+    data object DeleteError : FavouriteVacanciesState
+
+    data object DeletedFavourites : FavouriteVacanciesState
 }

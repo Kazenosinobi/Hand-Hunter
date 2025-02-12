@@ -26,6 +26,18 @@ class FavouriteVacanciesViewModel(
         getFavourites()
     }
 
+    fun deleteFavourites() {
+        viewModelScope.launch {
+            interactor.deleteFavourites()
+                .onSuccess {
+                    _state.value = FavouriteVacanciesState.DeletedFavourites
+                }
+                .onFailure {
+                    _state.value = FavouriteVacanciesState.DeleteError
+                }
+        }
+    }
+
     private fun getFavourites() {
         viewModelScope.launch {
             try {

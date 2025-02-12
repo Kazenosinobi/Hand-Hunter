@@ -48,6 +48,18 @@ interface FavouritesDao {
         deleteSkills(vacancyId)
     }
 
+    @Query("DELETE FROM favourites_table")
+    suspend fun deleteAllFavourites()
+
+    @Query("DELETE FROM key_skill_table")
+    suspend fun deleteAllSkills()
+
+    @Transaction
+    suspend fun deleteAllData() {
+        deleteAllFavourites()
+        deleteAllSkills()
+    }
+
     @Query("SELECT EXISTS(SELECT 1 FROM favourites_table WHERE vacancy_id = :vacancyId)")
     suspend fun isExisted(vacancyId: String): Boolean
 }
